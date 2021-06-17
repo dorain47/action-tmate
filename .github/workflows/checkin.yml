@@ -19,10 +19,21 @@ jobs:
         brew install docker docker-machine
         docker-machine create --driver virtualbox default
         docker-machine env default
+        eval "$(docker-machine env default)"
 
+
+    - name: Install docker-compose
+      run: |
+            get_latest_release() {
+              curl --silent "https://api.github.com/repos/$1/releases/latest" | # Get latest release from GitHub api
+                grep '"tag_name":' | # Get tag line
+                sed -E 's/.*"([^"]+)".*/\1/' # Pluck JSON value
+            }
+            ARTIFACT_URL="https://github.com/docker/compose/releases/download/$(get_latest_release docker/compose)/docker-compose-$(uname -s)-$(uname -m)"
+            curl -L $ARTIFACT_URL -o /usr/local/bin/docker-compose
+            chmod +x /usr/local/bin/docker-compose
 
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
       with:
         limit-access-to-actor: true
-
