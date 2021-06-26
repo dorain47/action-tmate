@@ -21,7 +21,6 @@ jobs:
         docker-machine env default
         eval "$(docker-machine env default)"
 
-
     - name: Install docker-compose
       run: |
             get_latest_release() {
